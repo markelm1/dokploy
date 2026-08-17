@@ -119,12 +119,6 @@ export default async function handler(
 			}
 			// If webhook doesn't provide image info, we'll use the configured image (old behavior)
 		} else if (sourceType === "github") {
-		if (application.triggerType === "tag") {
-			if (!isTagRef(req.headers, req.body)) {
-				res.status(301).json({ message: "Trigger type is tag, but this is not a tag push" });
-				return;
-			}
-		} else {
 			const normalizedCommits = req.body?.commits?.flatMap((commit: any) => [
 				...(commit.added || []),
 				...(commit.modified || []),
@@ -146,9 +140,7 @@ export default async function handler(
 				res.status(301).json({ message: "Branch Not Match" });
 				return;
 			}
-		}
-	}
-	} else if (sourceType === "git") {
+		} else if (sourceType === "git") {
 			const branchName = extractBranchName(req.headers, req.body);
 
 			if (!branchName || branchName !== application.customGitBranch) {
@@ -243,35 +235,35 @@ export default async function handler(
 				return;
 			}
 		} else if (sourceType === "gitea") {
-		if (application.triggerType === "tag") {
-			if (!isTagRef(req.headers, req.body)) {
-				res.status(301).json({ message: "Trigger type is tag, but this is not a tag push" });
-				return;
+			if (application.triggerType === "tag") {
+				if (!isTagRef(req.headers, req.body)) {
+					res.status(301).json({ message: "Trigger type is tag, but this is not a tag push" });
+					return;
+				}
+			} else {
+				const branchName = extractBranchName(req.headers, req.body);
+
+				const normalizedCommits = req.body?.commits?.flatMap((commit: any) => [
+					...(commit.added || []),
+					...(commit.modified || []),
+					...(commit.removed || []),
+				]);
+
+				const shouldDeployPaths = shouldDeploy(
+					application.watchPaths,
+					normalizedCommits,
+				);
+
+				if (!shouldDeployPaths) {
+					res.status(301).json({ message: "Watch Paths Not Match" });
+					return;
+				}
+
+				if (!branchName || branchName !== application.giteaBranch) {
+					res.status(301).json({ message: "Branch Not Match" });
+					return;
+				}
 			}
-		} else {
-			const branchName = extractBranchName(req.headers, req.body);
-
-			const normalizedCommits = req.body?.commits?.flatMap((commit: any) => [
-				...(commit.added || []),
-				...(commit.modified || []),
-				...(commit.removed || []),
-			]);
-
-			const shouldDeployPaths = shouldDeploy(
-				application.watchPaths,
-				normalizedCommits,
-			);
-
-			if (!shouldDeployPaths) {
-				res.status(301).json({ message: "Watch Paths Not Match" });
-				return;
-			}
-
-			if (!branchName || branchName !== application.giteaBranch) {
-				res.status(301).json({ message: "Branch Not Match" });
-				return;
-			}
-		}
 		}
 
 
