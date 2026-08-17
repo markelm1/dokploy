@@ -206,17 +206,17 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 									<FormLabel>Gitea Account</FormLabel>
 									<Select
 										onValueChange={(value) => {
-											if (!value) {
-												return;
-											}
-											field.onChange(value);
-											form.setValue("repository", {
-												owner: "",
-												repo: "",
-											});
-											form.setValue("branch", "");
-										}}
-										value={field.value}
+										if (!value) {
+											return;
+										}
+										field.onChange(value);
+										form.setValue("repository", {
+											owner: "",
+											repo: "",
+										});
+										form.setValue("branch", "");
+									}}
+									value={field.value}
 									>
 										<FormControl>
 											<SelectTrigger>
@@ -256,8 +256,7 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 												<GiteaIcon className="h-4 w-4" />
 												<span>View Repository</span>
 											</Link>
-										)}
-									</div>
+										)}</n									</div>
 
 									<Popover>
 										<PopoverTrigger asChild>
@@ -277,7 +276,7 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 																	(repo: GiteaRepository) =>
 																		repo.name === field.value.repo &&
 																		repo.owner.username === field.value.owner,
-																)?.name ?? "Select repository")}
+																	)?.name ?? "Select repository")}
 
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
@@ -336,8 +335,8 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 																			repo.name === field.value.repo &&
 																				repo.owner.username ===
 																					field.value.owner
-																				? "opacity-100"
-																				: "opacity-0",
+																					? "opacity-100"
+																					: "opacity-0",
 																		)}
 																	/>
 																</CommandItem>
@@ -352,8 +351,7 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 										<p className={cn("text-sm font-medium text-destructive")}>
 											Repository is required
 										</p>
-									)}
-								</FormItem>
+									)}</n								</FormItem>
 							)}
 						/>
 						<FormField
@@ -378,8 +376,8 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 															? branches?.find(
 																	(branch: GiteaBranch) =>
 																		branch.name === field.value,
-																)?.name
-															: "Select branch"}
+																	)?.name
+																: "Select branch"}
 													<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
 											</FormControl>
@@ -433,180 +431,181 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 												</ScrollArea>
 											</Command>
 
-											<FormMessage />
-									</Popover>
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="buildPath"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Build Path</FormLabel>
-									<FormControl>
-										<Input placeholder="/" {...field} />
-									</FormControl>
+												<FormMessage />
+											</Popover>
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="buildPath"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Build Path</FormLabel>
+											<FormControl>
+												<Input placeholder="/" {...field} />
+											</FormControl>
 
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="triggerType"
-							render={({ field }) => (
-								<FormItem className="md:col-span-2">
-									<div className="flex items-center gap-2 ">
-										<FormLabel>Trigger Type</FormLabel>
-										<TooltipProvider>
-											<Tooltip>
-												<TooltipTrigger asChild>
-													<HelpCircle className="size-4 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
-												</TooltipTrigger>
-												<TooltipContent>
-													<p>
-														Choose when to trigger deployments: on push to the
-														selected branch or when a new tag is created.
-													</p>
-												</TooltipContent>
-											</Tooltip>
-										</TooltipProvider>
-									</div>
-									<Select
-										onValueChange={(value) => {
-											if (!value) {
-												return;
-											}
-											field.onChange(value);
-										}}
-										value={field.value}
-									>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Select a trigger type" />
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											<SelectItem value="push">On Push</SelectItem>
-											<SelectItem value="tag">On Tag</SelectItem>
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						{triggerType === "push" && (
-						<FormField
-							control={form.control}
-							name="watchPaths"
-							render={({ field }) => (
-								<FormItem className="md:col-span-2">
-									<div className="flex items-center gap-2">
-										<FormLabel>Watch Paths</FormLabel>
-										<TooltipProvider>
-											<Tooltip>
-												<TooltipTrigger asChild>
-													<HelpCircle className="size-4 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
-												</TooltipTrigger>
-												<TooltipContent>
-													<p>
-														Add paths to watch for changes. When files in these
-														paths change, a new deployment will be triggered.
-													</p>
-												</TooltipContent>
-											</Tooltip>
-										</TooltipProvider>
-									</div>
-									<div className="flex flex-wrap gap-2 mb-2">
-										{field.value?.map((path: string, index: number) => (
-											<Badge
-												key={index}
-												variant="secondary"
-												className="flex items-center gap-1"
-											>
-												{path}
-												<button
-													type="button"
-													aria-label="Remove watch path"
-													className="inline-flex items-center focus-visible:ring-2"
-													onClick={() => {
-														const newPaths = [...(field.value || [])];
-														newPaths.splice(index, 1);
-														field.onChange(newPaths);
-													}}
-												>
-													<X className="size-3 cursor-pointer hover:text-destructive" />
-												</button>
-											</Badge>
-										))}
-									</div>
-									<div className="flex gap-2">
-										<FormControl>
-											<Input
-												placeholder="Enter a path to watch (e.g., src/**, dist/*.js)"
-												onKeyDown={(e) => {
-													if (e.key === "Enter") {
-														e.preventDefault();
-														const input = e.currentTarget;
-														const path = input.value.trim();
-														if (path) {
-															field.onChange([...(field.value || []), path]);
-															input.value = "";
-														}
+											<FormMessage />
+										</FormItem>
+									)}
+									/>
+									<FormField
+										control={form.control}
+										name="triggerType"
+										render={({ field }) => (
+											<FormItem className="md:col-span-2">
+												<div className="flex items-center gap-2 ">
+													<FormLabel>Trigger Type</FormLabel>
+													<TooltipProvider>
+														<Tooltip>
+															<TooltipTrigger asChild>
+																<HelpCircle className="size-4 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+															</TooltipTrigger>
+															<TooltipContent>
+																<p>
+																	Choose when to trigger deployments: on push to the
+																	selected branch or when a new tag is created.
+																</p>
+															</TooltipContent>
+															</Tooltip>
+														</TooltipProvider>
+												</div>
+												<Select
+													onValueChange={(value) => {
+													if (!value) {
+														return;
 													}
+													field.onChange(value);
 												}}
+													value={field.value}
+												>
+													<FormControl>
+														<SelectTrigger>
+															<SelectValue placeholder="Select a trigger type" />
+														</SelectTrigger>
+													</FormControl>
+													<SelectContent>
+														<SelectItem value="push">On Push</SelectItem>
+														<SelectItem value="tag">On Tag</SelectItem>
+													</SelectContent>
+												</Select>
+												<FormMessage />
+											</FormItem>
+											)}
+										/>
+										{triggerType === "push" && (
+											<FormField
+												control={form.control}
+												name="watchPaths"
+												render={({ field }) => (
+													<FormItem className="md:col-span-2">
+														<div className="flex items-center gap-2">
+															<FormLabel>Watch Paths</FormLabel>
+															<TooltipProvider>
+																<Tooltip>
+																	<TooltipTrigger asChild>
+																		<HelpCircle className="size-4 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+																	</TooltipTrigger>
+																	<TooltipContent>
+																		<p>
+																			Add paths to watch for changes. When files in these
+																			paths change, a new deployment will be triggered.
+																		</p>
+																	</TooltipContent>
+																</Tooltip>
+															</TooltipProvider>
+														</div>
+														<div className="flex flex-wrap gap-2 mb-2">
+															{field.value?.map((path: string, index: number) => (
+																<Badge
+																	key={index}
+																	variant="secondary"
+																	className="flex items-center gap-1"
+																>
+																	{path}
+																	<button
+																		type="button"
+																		aria-label="Remove watch path"
+																		className="inline-flex items-center focus-visible:ring-2"
+																		onClick={() => {
+																			const newPaths = [...(field.value || [])];
+																			newPaths.splice(index, 1);
+																			field.onChange(newPaths);
+																		}}
+																	>
+																		<X className="size-3 cursor-pointer hover:text-destructive" />
+																	</button>
+																</Badge>
+															))}
+														</div>
+														<div className="flex gap-2">
+															<FormControl>
+																<Input
+																	placeholder="Enter a path to watch (e.g., src/**, dist/*.js)"
+																	onKeyDown={(e) => {
+																		if (e.key === "Enter") {
+																			e.preventDefault();
+																			const input = e.currentTarget;
+																			const path = input.value.trim();
+																			if (path) {
+																				field.onChange([...(field.value || []), path]);
+																				input.value = "";
+																			}
+																		}
+																	}}
+																/>
+															</FormControl>
+															<Button
+																type="button"
+																variant="outline"
+																size="icon"
+																onClick={() => {
+																	const input = document.querySelector(
+																		'input[placeholder*="Enter a path"]',
+																	) as HTMLInputElement;
+																	const path = input.value.trim();
+																	if (path) {
+																		field.onChange([...(field.value || []), path]);
+																		input.value = "";
+																	}
+																}}
+															>
+																<Plus className="size-4" />
+															</Button>
+														</div>
+														<FormMessage />
+												</FormItem>
+												)}
 											/>
-										</FormControl>
+										)}
+										<FormField
+											control={form.control}
+											name="enableSubmodules"
+											render={({ field }) => (
+												<FormItem className="flex flex-row items-center space-x-2 space-y-0">
+													<FormControl>
+														<Switch
+															checked={field.value}
+															onCheckedChange={field.onChange}
+														/>
+													</FormControl>
+													<FormLabel>Enable Submodules</FormLabel>
+												</FormItem>
+												)}
+											/>
+									</div>
+									<div className="flex w-full justify-end">
 										<Button
-											type="button"
-											variant="outline"
-											size="icon"
-											onClick={() => {
-												const input = document.querySelector(
-													'input[placeholder*="Enter a path"]',
-												) as HTMLInputElement;
-												const path = input.value.trim();
-												if (path) {
-													field.onChange([...(field.value || []), path]);
-													input.value = "";
-												}
-											}}
+											isLoading={isSavingGiteaProvider}
+											type="submit"
+											className="w-fit"
 										>
-											<Plus className="size-4" />
+											Save
 										</Button>
 									</div>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="enableSubmodules"
-							render={({ field }) => (
-								<FormItem className="flex flex-row items-center space-x-2 space-y-0">
-									<FormControl>
-										<Switch
-											checked={field.value}
-											onCheckedChange={field.onChange}
-										/>
-									</FormControl>
-									<FormLabel>Enable Submodules</FormLabel>
-								</FormItem>
-							)}
-						/>
-					</div>
-					<div className="flex w-full justify-end">
-						<Button
-							isLoading={isSavingGiteaProvider}
-							type="submit"
-							className="w-fit"
-						>
-							Save
-						</Button>
-					</div>
-				</form>
-			</Form>
-		</div>
-	);
-};
+								</form>
+							</Form>
+						</div>
+					);
+				};
