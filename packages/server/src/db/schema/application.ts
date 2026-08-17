@@ -502,7 +502,10 @@ export const apiSaveGiteaProvider = createSchema
 		giteaId: true,
 	})
 	.required()
-	.extend({ giteaBranch: branchField, triggerType: z.enum(["push", "tag"]).default("push") })
+	.extend({
+		giteaBranch: branchField,
+		triggerType: z.enum(["push", "tag"]).default("push"),
+	})
 	.merge(createSchema.pick({ enableSubmodules: true, watchPaths: true }));
 
 export const apiSaveDockerProvider = createSchema
