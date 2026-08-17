@@ -80,6 +80,7 @@ const GiteaProviderSchema = z.object({
 	giteaId: z.string().min(1, "Gitea Provider is required"),
 	watchPaths: z.array(z.string()).default([]),
 	enableSubmodules: z.boolean().optional(),
+	triggerType: z.enum(["push", "tag"]).default("push"),
 });
 
 type GiteaProvider = z.infer<typeof GiteaProviderSchema>;
@@ -106,12 +107,14 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 			branch: "",
 			watchPaths: [],
 			enableSubmodules: false,
+			triggerType: "push" as const,
 		},
 		resolver: zodResolver(GiteaProviderSchema),
 	});
 
 	const repository = form.watch("repository");
 	const giteaId = form.watch("giteaId");
+	const triggerType = form.watch("triggerType");
 
 	const { data: giteaUrl } = api.gitea.getGiteaUrl.useQuery(
 		{ giteaId },
@@ -160,6 +163,7 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 				giteaId: data.giteaId || "",
 				watchPaths: data.watchPaths || [],
 				enableSubmodules: data.enableSubmodules || false,
+				triggerType: data.triggerType || "push",
 			});
 		}
 	}, [form.reset, data?.applicationId, form]);
@@ -174,6 +178,7 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 			applicationId,
 			watchPaths: data.watchPaths,
 			enableSubmodules: data.enableSubmodules || false,
+			triggerType: data.triggerType,
 		})
 			.then(async () => {
 				toast.success("Service Provider Saved");
@@ -427,9 +432,8 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 													</CommandGroup>
 												</ScrollArea>
 											</Command>
-										</PopoverContent>
 
-										<FormMessage />
+											<FormMessage />
 									</Popover>
 								</FormItem>
 							)}
@@ -448,6 +452,51 @@ export const SaveGiteaProvider = ({ applicationId }: Props) => {
 								</FormItem>
 							)}
 						/>
+						<FormField
+							control={form.control}
+							name="triggerType"
+							render={({ field }) => (
+								<FormItem className="md:col-span-2">
+									<div className="flex items-center gap-2 ">
+										<FormLabel>Trigger Type</FormLabel>
+										<TooltipProvider>
+											<Tooltip>
+												<TooltipTrigger asChild>
+													<HelpCircle className="size-4 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+												</TooltipTrigger>
+												<TooltipContent>
+													<p>
+														Choose when to trigger deployments: on push to the
+														selected branch or when a new tag is created.
+													</p>
+												</TooltipContent>
+											</Tooltip>
+										</TooltipProvider>
+									</div>
+									<Select
+										onValueChange={(value) => {
+											if (!value) {
+												return;
+											}
+											field.onChange(value);
+										}}
+										value={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Select a trigger type" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectItem value="push">On Push</SelectItem>
+											<SelectItem value="tag">On Tag</SelectItem>
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{triggerType === "push" && (
 						<FormField
 							control={form.control}
 							name="watchPaths"
