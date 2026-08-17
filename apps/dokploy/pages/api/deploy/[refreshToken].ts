@@ -237,7 +237,9 @@ export default async function handler(
 		} else if (sourceType === "gitea") {
 			if (application.triggerType === "tag") {
 				if (!isTagRef(req.headers, req.body)) {
-					res.status(301).json({ message: "Trigger type is tag, but this is not a tag push" });
+					res.status(301).json({
+						message: "Trigger type is tag, but this is not a tag push",
+					});
 					return;
 				}
 			} else {
@@ -265,7 +267,6 @@ export default async function handler(
 				}
 			}
 		}
-
 
 		try {
 			const jobData: DeploymentJob = {
@@ -564,7 +565,7 @@ export const extractTagName = (headers: any, body: any) => {
 	return null;
 };
 
-export const isTagRef = (headers: any, body: any): boolean => {
+export const isTagRef = (_headers: any, body: any): boolean => {
 	return body?.ref?.startsWith("refs/tags/") ?? false;
 };
 
