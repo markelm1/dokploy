@@ -517,6 +517,7 @@ export const applicationRouter = createTRPCRouter({
 				giteaId: input.giteaId,
 				watchPaths: input.watchPaths,
 				enableSubmodules: input.enableSubmodules,
+				triggerType: input.triggerType,
 			});
 			const application = await findApplicationById(input.applicationId);
 			await audit(ctx, {
@@ -614,7 +615,7 @@ export const applicationRouter = createTRPCRouter({
 				customGitUrl: null,
 				customGitSSHKeyId: null,
 
-				sourceType: "github", // Reset to default
+				sourceType: "github",
 				applicationStatus: "idle",
 				watchPaths: null,
 				enableSubmodules: false,
